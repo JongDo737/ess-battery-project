@@ -1,0 +1,10 @@
+구분,MAPE (%),비고
+Train (Batch 1 CV),9.63,학습 분할 안 정책 GroupKFold 평균
+Valid (Batch 1 Hold-out),5.67,동일 프로토콜이 train/valid에 갈라지지 않음
+Test (Batch 2),28.01,유효 라벨 39셀 / 전체 47셀
+Gap (Train-Valid),-3.95,(+) : 과적합 의심
+Gap (Valid-Test),22.34,(+) : 배치간 일반화 저하 의심
+Gap (Target-Test),18.91,Target : 원논문 9.1%
+Test (Batch 3),14.09,유효 라벨 44셀 / 전체 46셀
+Gap (Batch2-Batch3),-13.92,두 테스트 배치 비교
+Gap (Target-Test),4.99,"Batch 3 기준, 논문 보고와의 차이"
