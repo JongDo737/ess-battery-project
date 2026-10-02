@@ -1,15 +1,26 @@
+# Python
 .venv/
+venv/
 __pycache__/
 *.py[cod]
+*$py.class
 *.egg-info/
-.DS_Store
+.pytest_cache/
+.mypy_cache/
+
+# Jupyter
 .ipynb_checkpoints/
 
-# raw MATLAB dumps are several GB
+# 원본 MATLAB / 캐시 (수 GB)
 data/raw/
-data/*.mat
+**/*.mat
 *.pkl
+*.h5
 
-# local env
+# 로컬 환경
 .env
 .mplconfig/
+.DS_Store
+.idea/
+.vscode/
+*.log

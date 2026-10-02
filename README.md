@@ -13,6 +13,12 @@
 
 **28.01%는 Batch 2 전체 47셀의 성능이 아니라 유효 라벨 39셀의 성능이다.** 결측 수명 8셀의 정확한 MAPE는 계산할 수 없다. `2018-04-03 varcharge` 파일은 사용하지 않는다.
 
+Batch 1은 우측 검열 10셀, Batch 2는 결측 수명 8셀, Batch 3는 결측 수명 2셀이다. 두 그림을 별도 이미지로 제공해 README 너비에서도 축과 라벨을 읽을 수 있다.
+
+![배치별 유효·결측·검열 라벨 수](results/figures/fig1a_label_status.png)
+
+![관측 종료 용량과 라벨 없는 101사이클 셀](results/figures/fig1b_end_capacity.png)
+
 ## 파일 구조
 
 ```text
@@ -29,12 +35,18 @@
 │   ├── features.py
 │   └── train.py
 ├── results/
-│   └── model_performance.csv
+│   ├── model_performance.csv
+│   └── figures/
+│       ├── fig1a_label_status.png
+│       ├── fig1b_end_capacity.png
+│       ├── fig2_dq_vs_life.png
+│       ├── fig3_pred_vs_actual.png
+│       └── fig4_batch2_residuals.png
 ├── requirements.txt
 └── README.md
 ```
 
-가공 CSV는 원본 파일 없이 실행하기 위해 포함한다. EDA·피처·모델 비교·셀별 예측·오류 그림은 실행 결과가 저장된 세 노트북에서 확인한다. 성능 CSV 한 파일에 Batch 2·3을 함께 보고한다.
+가공 CSV는 원본 파일 없이 실행하기 위해 포함한다. 핵심 그림은 `results/figures/`에 두고, 세부 비교는 실행 결과가 저장된 세 노트북에서 확인한다. `python -m src.train`은 성능표를 다시 저장한다. 그래프 이미지는 01_EDA와 03_modeling 노트북을 실행하면 다시 만들어진다. 성능 CSV 한 파일에 Batch 2·3을 함께 보고한다.
 
 ## 환경 설정과 실행
 
@@ -74,6 +86,10 @@ python -m src.train
 
 유효 라벨을 대상으로 분포·충전 정책·ΔQ 관계를 다시 분석했다. 라벨 없는 101사이클 관측 셀을 단수명 사례로 해석하지 않는다. Batch 2의 유효 수명 범위도 Batch 1과 달라 배치 이동이 남는다.
 
+![ΔQ 분산과 수명](results/figures/fig2_dq_vs_life.png)
+
+배치마다 색·모양을 달리하고 표본 수와 Spearman 순위상관을 범례에 표시했다. 세 배치의 경향과 차이를 함께 확인할 수 있다.
+
 ## 피처 엔지니어링과 모델 선택
 
 - 핵심 변수: `ΔQ(V) = Qdlin(cycle=100) − Qdlin(cycle=10)`.
@@ -105,7 +121,11 @@ MAPE는 낮을수록 좋다. Gap은 반올림 전 성능에서 뒤 구간 − �
 | Gap (Batch2-Batch3) | -13.92 | 두 테스트 배치 비교 |
 | Gap (Target-Test) | 4.99 | Batch 3 기준, 논문 보고와의 차이 |
 
-Valid-Test Gap 22.34%p가 남아 배치 간 일반화 저하가 있다. Batch 3는 Batch 2보다 MAPE가 낮지만, 수명 분포와 MAPE 분모가 다르므로 이 차이만으로 피처의 배치 과적합 여부를 확정하지 않는다. 논문 9.1%는 저자 전처리 124셀·저자 분할로, 이번 유효 라벨 119셀·배치 분할과 조건이 다르다.
+![예측 대 실제](results/figures/fig3_pred_vs_actual.png)
+
+![Batch 2 잔차](results/figures/fig4_batch2_residuals.png)
+
+Valid-Test Gap 22.34%p가 남아 배치 간 일반화 저하가 있다. Batch 2의 400사이클 전후 셀은 완전 예측 점선보다 위에 모여 과대 예측된다. 셀별 오차와 잔차 그림은 03_modeling 노트북에서 확인한다. Batch 3는 Batch 2보다 MAPE가 낮지만, 수명 분포와 MAPE 분모가 다르므로 이 차이만으로 피처의 배치 과적합 여부를 확정하지 않는다. 논문 9.1%는 저자 전처리 124셀·저자 분할로, 이번 유효 라벨 119셀·배치 분할과 조건이 다르다.
 
 ## 오류 분석
 
